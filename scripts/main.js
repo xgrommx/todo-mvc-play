@@ -1,7 +1,7 @@
 define([
-  'lib/react', 'lib/bacon', 'model', 'view'
+  'lib/react', 'lib/bacon', 'model', 'ui'
 ],
-  function (React, Bacon, T, View) {
+  function (React, Bacon, T, UI) {
 
   // Application
   // -----------
@@ -22,7 +22,7 @@ define([
     .skipDuplicates()
 
   app.onValue(function (state) {
-    React.renderComponent(View.render(run)(state), document.body)
+    React.renderComponent(UI.render(run)(state), document.body)
   })
 
 })

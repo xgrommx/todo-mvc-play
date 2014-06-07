@@ -1,8 +1,9 @@
 define([
+  'lib/react',
   'lib/dom',
   'lib/type',
   'lib/events'
-], function (_, Type, Events) {
+], function (React, _, Type, Events) {
 
   var Header = {}
 
@@ -20,7 +21,7 @@ define([
       _.input({
         id: 'new-todo',
         type: 'text',
-        autofocus: 'autofocus',
+        autoFocus: true,
         valueLink: {
           value: env.value,
           requestChange: env.setValue

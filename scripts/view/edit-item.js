@@ -18,7 +18,7 @@ define([
     return _.input({
       className: 'edit',
       type: 'text',
-      autofocus: 'autofocus',
+      autoFocus: 'autofocus',
       onKeyDown: Events.onEnter(env.saveEdit),
       onBlur: env.saveEdit,
       valueLink: {
