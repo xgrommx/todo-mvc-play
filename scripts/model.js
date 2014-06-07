@@ -2,7 +2,7 @@ define([
   'lib/mori',
   'lib/lens',
   'lib/struct',
-  'lib/mapValues'
+  'lib/map-values'
 ], function (M, Lens, struct, mapValues) {
 
   //: () -> {State} ItemID

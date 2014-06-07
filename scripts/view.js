@@ -3,64 +3,46 @@ define([
   'lib/mori',
   'lib/bacon',
   'lib/lens',
-  'model'
-], function (React, M, Bacon, Lens, T) {
+  'lib/events',
+  'model',
+  'view/header',
+  'view/toggle-all',
+  'view/edit-item'
+], function (React, M, Bacon, Lens, Events, T, Header, ToggleAll, EditItem) {
   var _ = React.DOM
 
   var V = {}
 
-  //: (() -> a) -> Event -> Boolean?
-  var onEnter = function (f) {
-    return function (e) {
-      if (e.which === 13) {
-        f()
-        return false
-      }
-      return true
-    }
+  var withChange = function (run, f) {
+    return function (v) { run(f(v))() }
   }
 
   var renderHeader = function (run, app) {
-    return _.header({ id: 'header' },
-      _.h1(null, 'todos'),
-      _.input({
-        id: 'new-todo',
-        type: 'text',
-        autofocus: 'autofocus',
-        valueLink: {
-          value: T.newItem.get(app),
-          requestChange: function (v) { run(T.newItem.set(v))() }
-        },
-        onKeyDown: onEnter(run(T.createNewItem)),
-        placeholder: 'What needs to be done?'
-      }))
+    return Header.view({
+      value: T.newItem.get(app),
+      setValue: withChange(run, T.newItem.set),
+      createItem: run(T.createNewItem)
+    })
   }
 
   var renderToggleAll = function (run, app) {
     var empty = M.is_empty(T.items.get(app))
     var allChecked = M.every(T.done.get, M.vals(T.items.get(app)))
-    return empty ? null : _.input({
-      id: 'toggle-all',
-      type: 'checkbox',
-      checked: allChecked,
-      onChange: run(T.checkAll(!allChecked))
+
+    return ToggleAll.view({
+      visible: !empty,
+      active: allChecked,
+      toggle: run(T.checkAll(!allChecked))
     })
   }
 
   var renderEditItem = function (run, app) {
-    var edit = T.editing.get(app)
-    return _.input({
-      className: 'edit',
-      type: 'text',
-      autofocus: 'autofocus',
-      onKeyDown: onEnter(run(T.saveEdit)),
-      onBlur: run(T.saveEdit),
-      valueLink: {
-        value: T.editValue.get(edit),
-        requestChange: function (v) {
-          run(T.editing.mod(T.editValue.set(v)))()
-        }
-      }
+    var editingValue = Lens.comp(T.editing, T.editValue)
+
+    return EditItem.view({
+      value: editingValue.get(app),
+      saveEdit: run(T.saveEdit),
+      setValue: withChange(run, editingValue.set)
     })
   }
 
