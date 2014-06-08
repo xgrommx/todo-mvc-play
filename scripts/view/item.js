@@ -17,18 +17,24 @@ define([
   }
 
   Item.view = function (env) {
-    var className = [
+    checks(env)
+
+    var itemClass = [
       env.done ? 'completed' : '',
       env.editing ? 'editing' : ''
     ].join(' ')
 
-    return _.li({ className: className },
+    return _.li({ className: itemClass },
+
       _.div({ className: 'view' },
         Check.view({ active: env.done, toggle: env.check }),
         _.label({ onDoubleClick: env.startEditing }, env.value),
         _.button({ className: 'destroy', onClick: env.destroy })
       ),
-      env.editing && EditItem.view(env.editing))
+
+      //  Only render the editing box if we are actually editing this item
+      env.editing && EditItem.view(env.editing)
+    )
   }
 
   return Item
